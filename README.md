@@ -182,3 +182,20 @@ LLMStack/
 
 Contributions, issues, and suggestions are welcome.  
 Feel free to open an issue or submit a pull request.
+
+---
+
+## Author
+
+**Joseph Meneses**
+🎓 Student of ASIR — Systems and Database Administration
+🌍 Madrid, Spain
+🔗 [GitHub Profile](https://github.com/jpmc0805)
+
+---
+
+## License
+
+This project is licensed under the **MIT License**.  
+Feel free to use, study, modify, or adapt it for your own purposes.  
+See the [`LICENSE`](LICENSE) file for details.
