@@ -1,0 +1,71 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama
+    restart: unless-stopped
+    gpus: all
+
+    environment:
+      # Disable telemetry and analytics
+      - DO_NOT_TRACK=1
+      - SCARF_NO_ANALYTICS=1
+      - OLLAMA_TELEMETRY=false
+      - OLLAMA_NO_CLOUD=true
+      - OLLAMA_NOPRUNE=false
+      - OLLAMA_HOST=0.0.0.0:11434
+      # Force exclusive GPU usage — no CPU offload
+      - OLLAMA_GPU_OVERHEAD=0
+
+    volumes:
+      - ollama-data:/root/.ollama
+
+    networks:
+      ollama-net:
+        ipv4_address: 192.168.200.10
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:v0.9.2
+    container_name: open-webui
+    restart: unless-stopped
+
+    environment:
+      - OLLAMA_BASE_URL=http://ollama:11434
+      # Disable features that require internet
+      - ENABLE_COMMUNITY_SHARING=False
+      - ENABLE_MESSAGE_RATING=False
+      - ENABLE_LOGIN_FORM=True
+      # Disable telemetry and analytics
+      - DO_NOT_TRACK=1
+      - SCARF_NO_ANALYTICS=1
+      # Offline mode — disables update checks and external calls
+      - OFFLINE_MODE=True
+      # Secret key for session signing — set in .env (never hardcode)
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+
+    volumes:
+      - open-webui-data:/app/backend/data
+
+    depends_on:
+      - ollama
+
+    networks:
+      ollama-net:
+        ipv4_address: 192.168.200.20
+
+volumes:
+  ollama-data:
+    name: ollama-data
+  open-webui-data:
+    external: true
+    name: open-webui-data
+
+networks:
+  ollama-net:
+    name: ollama-net
+    # Blocks ALL outbound internet traffic from containers
+    internal: true
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.200.0/24
+          gateway: 192.168.200.1

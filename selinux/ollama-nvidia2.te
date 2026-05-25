@@ -1,0 +1,14 @@
+
+module ollama-nvidia2 1.0;
+
+require {
+	type init_t;
+	type xserver_misc_device_t;
+	class chr_file { open read write };
+}
+
+#============= init_t ==============
+
+#!!!! This avc is allowed in the current policy
+allow init_t xserver_misc_device_t:chr_file { read write };
+allow init_t xserver_misc_device_t:chr_file open;
